@@ -1,0 +1,36 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Registry
+    network: sepolia
+    source:
+      address: "0x0000000000000000000000000000000000000000"
+      abi: Registry
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MarketAdded
+        - MarketRemoved
+        - ThresholdUpdated
+        - VaultAdded
+        - VaultRemoved
+      abis:
+        - name: Registry
+          file: ./abis/Registry.json
+      eventHandlers:
+        - event: MarketAdded(indexed address)
+          handler: handleMarketAdded
+        - event: MarketRemoved(indexed address)
+          handler: handleMarketRemoved
+        - event: ThresholdUpdated(uint256)
+          handler: handleThresholdUpdated
+        - event: VaultAdded(indexed address)
+          handler: handleVaultAdded
+        - event: VaultRemoved(indexed address)
+          handler: handleVaultRemoved
+      file: ./src/registry.ts
