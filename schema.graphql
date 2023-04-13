@@ -1,5 +1,6 @@
-type ExampleEntity @entity {
-  id: Bytes!
-  count: BigInt!
-  market: Bytes! # address
+type Registry @entity {
+  # should be "registry"
+  id: ID!
+  markets: [String!]!
+  vaults: [String!]!
 }
