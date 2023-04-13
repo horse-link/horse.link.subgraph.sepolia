@@ -45,7 +45,6 @@ directories.forEach((dir, i) => {
       // replace hardcoded address in registry.ts with the one in the json, line 4
       // hope it doesnt lint :fingers_crossed:
       const address = content.split("\n")[3].split('"')[3];
-      console.log("\n    with registry", address);
 
       const registryContent = fs
         .readFileSync(path.join(topLevel, "src", "registry.ts"), {

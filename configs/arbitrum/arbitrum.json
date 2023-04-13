@@ -1,0 +1,14 @@
+{
+  "arbitrum-one": {
+    "Registry": {
+      "address": "0x33Ce0448DEFb2d94Af326C50c39FA20fB53C227a",
+      "startBlock": 79174517
+    },
+    "Vault": {
+      "startBlock": 79174517
+    },
+    "Market": {
+      "startBlock": 79174517
+    }
+  }
+}
