@@ -31,13 +31,13 @@ export function handlePlaced(event: Placed): void {
   entity.payout = event.params.payout;
   entity.owner = event.params.owner.toHexString();
 
-  entity.createdAt = event.block.timestamp;
+  entity.createdAt = event.block.timestamp.toI32();
 
   // zeroed
   entity.settled = false;
   entity.result = 0;
   entity.recipient = Address.zero().toHexString();
-  entity.settledAt = BigInt.zero();
+  entity.settledAt = BigInt.zero().toI32();
 
   entity.save();
 
@@ -60,7 +60,7 @@ export function handleSettled(event: Settled): void {
   entity.settled = true;
   entity.result = event.params.result;
   entity.recipient = event.params.recipient.toHexString();
-  entity.settledAt = event.block.timestamp;
+  entity.settledAt = event.block.timestamp.toI32();
 
   entity.save();
 }
@@ -76,7 +76,7 @@ export function handleBorrowed(event: Borrowed): void {
 
   entity.betId = betId;
   entity.amount = event.params.amount;
-  entity.createdAt = event.block.timestamp;
+  entity.createdAt = event.block.timestamp.toI32();
 
   entity.save();
 }
@@ -89,7 +89,7 @@ export function handleRepaid(event: Repaid): void {
   const entity = new Repay(event.transaction.hash.toHexString());
   entity.vault = event.params.vault.toHexString();
   entity.amount = event.params.amount;
-  entity.createdAt = event.block.timestamp;
+  entity.createdAt = event.block.timestamp.toI32();
 
   entity.save();
 }

@@ -23,7 +23,7 @@ type Deposit @entity {
   owner: String!
   assets: BigInt!
   shares: BigInt!
-  createdAt: BigInt!
+  createdAt: Int!
 }
 
 type Withdraw @entity {
@@ -35,7 +35,7 @@ type Withdraw @entity {
   owner: String!
   assets: BigInt!
   shares: BigInt!
-  createdAt: BigInt!
+  createdAt: Int!
 }
 
 type Borrow @entity {
@@ -46,7 +46,7 @@ type Borrow @entity {
   betId: String!
 
   amount: BigInt!
-  createdAt: BigInt!
+  createdAt: Int!
 }
 
 type Repay @entity {
@@ -55,7 +55,7 @@ type Repay @entity {
 
   vault: String!
   amount: BigInt!
-  createdAt: BigInt!
+  createdAt: Int!
 }
 
 type Bet @entity {
@@ -67,10 +67,10 @@ type Bet @entity {
   amount: BigInt!
   payout: BigInt!
   owner: String!
-  createdAt: BigInt!
+  createdAt: Int!
 
   settled: Boolean!
   result: Int!
   recipient: String!
-  settledAt: BigInt!
+  settledAt: Int!
 }
