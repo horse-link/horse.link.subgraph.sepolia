@@ -33,9 +33,12 @@ export function handlePlaced(event: Placed): void {
   const entity = new Bet(id);
 
   // add misc bet args
+  entity.market = marketAddress;
+
   const vaultAddress = Market.bind(
     Address.fromString(marketAddress)
   ).getVaultAddress();
+
   entity.asset = Vault.bind(vaultAddress)
     .asset()
     .toHexString();
