@@ -77,6 +77,8 @@ dataSources:
       abis:
         - name: Market
           file: ./abis/Market.json
+        - name: Vault
+          file: ./abis/Vault.json
       eventHandlers:
         - event: Placed(uint256,bytes16,bytes16,uint256,uint256,indexed address)
           handler: handlePlaced
