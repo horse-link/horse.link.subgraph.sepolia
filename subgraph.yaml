@@ -1,6 +1,8 @@
 specVersion: 0.0.5
+
 schema:
   file: ./schema.graphql
+
 dataSources:
   - kind: ethereum
     name: Registry
@@ -14,11 +16,7 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - MarketAdded
-        - MarketRemoved
-        - ThresholdUpdated
-        - VaultAdded
-        - VaultRemoved
+        - Registry
       abis:
         - name: Registry
           file: ./abis/Registry.json
@@ -34,3 +32,27 @@ dataSources:
         - event: VaultRemoved(indexed address)
           handler: handleVaultRemoved
       file: ./src/registry.ts
+  
+  - kind: ethereum
+    name: Vault
+    network: sepolia
+    source:
+      abi: Vault
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Registry
+        - Deposit
+        - Withdraw
+      abis:
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleWithdraw
+      file: ./src/vault.ts

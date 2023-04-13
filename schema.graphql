@@ -4,3 +4,24 @@ type Registry @entity {
   markets: [String!]!
   vaults: [String!]!
 }
+
+type Deposit @entity {
+  # tx hash
+  id: ID!
+  sender: String!
+  owner: String!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+}
+
+type Withdraw @entity {
+  # tx hash
+  id: ID!
+  sender: String!
+  receiver: String!
+  owner: String!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+}
