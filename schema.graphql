@@ -61,7 +61,7 @@ type Bet @entity {
   createdAt: BigInt!
 
   settled: Boolean!
-  result: BigInt!
+  result: Int!
   recipient: String!
   settledAt: BigInt!
 }
