@@ -1,14 +1,14 @@
 {
   "goerli": {
     "Registry": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "startBlock": 0
+      "address": "0xBE0007d2A90fE50569374d5AA78644424D49F568",
+      "startBlock": 8809223
     },
     "Vault": {
-      "startBlock": 0
+      "startBlock": 8809223
     },
     "Market": {
-      "startBlock": 0
+      "startBlock": 8809223
     }
   }
 }

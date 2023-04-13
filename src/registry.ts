@@ -17,7 +17,7 @@ import {
 
 // TODO: fill in
 const ADDRESS = Address.fromString(
-  "0x0000000000000000000000000000000000000000"
+  "0xBE0007d2A90fE50569374d5AA78644424D49F568"
 );
 
 function _getRegistry(): Registry {
