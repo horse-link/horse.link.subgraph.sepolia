@@ -6,7 +6,7 @@ schema:
 dataSources:
   - kind: ethereum
     name: Registry
-    network: goerli
+    network: sepolia
     source:
       address: "0x0000000000000000000000000000000000000000"
       abi: Registry
@@ -36,7 +36,7 @@ dataSources:
   
   - kind: ethereum
     name: Vault
-    network: goerli
+    network: sepolia
     source:
       abi: Vault
       startBlock: 0
@@ -60,7 +60,7 @@ dataSources:
 
   - kind: ethereum
     name: Market
-    network: goerli
+    network: sepolia
     source:
       abi: Market
       startBlock: 0

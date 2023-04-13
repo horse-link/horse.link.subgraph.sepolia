@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Placed, Settled, Borrowed, Repaid } from "../generated/Market/Market";
 import { Borrow, Repay, Registry, Bet } from "../generated/schema";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
@@ -26,10 +25,8 @@ export function handlePlaced(event: Placed): void {
   const id = _createBetId(marketAddress, event.params.index.toI32());
   const entity = new Bet(id);
 
-  entity.marketId = ethers.utils.parseBytes32String(event.params.marketId);
-  entity.propositionId = ethers.utils.parseBytes32String(
-    event.params.propositionId
-  );
+  entity.marketId = event.params.marketId.toString();
+  entity.propositionId = event.params.propositionId.toString();
   entity.amount = event.params.amount;
   entity.payout = event.params.payout;
   entity.owner = event.params.owner.toHexString();

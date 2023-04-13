@@ -4,12 +4,11 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ horse-link/horse-link-sepolia-dev"
+    "deploy": "node scripts/deploy.cjs"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.46.1",
-    "@graphprotocol/graph-ts": "0.29.1",
-    "ethers": "5.7.2"
+    "@graphprotocol/graph-ts": "0.29.1"
   },
   "devDependencies": {
     "matchstick-as": "0.5.0"
