@@ -45,9 +45,9 @@ directories.forEach((dir, i) => {
   });
 
   // run depoyment script
-  console.log(`\ndeploying ${dir}...`);
+  console.log(`\ndeploying ${dir} to horse-link/horse-link-${dir}-dev...`);
   childProcess.execSync(
-    `graph deploy --node https://api.thegraph.com/deploy/ horse-link/horse-link-${dir}-dev`,
+    `graph deploy --node https://api.thegraph.com/deploy/ horse-link/horselink-${dir}-test`,
     { encoding: "utf-8", stdio: "ignore" }
   );
   console.log("done!");
