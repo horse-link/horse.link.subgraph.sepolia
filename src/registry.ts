@@ -8,6 +8,12 @@ import {
   VaultRemoved
 } from "../generated/Registry/Registry";
 import { Registry } from "../generated/schema";
+import {
+  incrementMarkets,
+  decrementMarkets,
+  incrementVaults,
+  decrementVaults
+} from "./aggregator";
 
 // TODO: fill in
 const ADDRESS = Address.fromString(
@@ -18,6 +24,8 @@ function _getRegistry(): Registry {
   let entity = Registry.load("registry");
   if (!entity) {
     entity = new Registry("registry");
+    entity.markets = [];
+    entity.vaults = [];
   }
 
   return entity;
@@ -63,6 +71,8 @@ export function handleMarketAdded(event: MarketAdded): void {
   entity.markets = markets;
 
   entity.save();
+
+  incrementMarkets();
 }
 
 export function handleMarketRemoved(event: MarketRemoved): void {
@@ -73,6 +83,8 @@ export function handleMarketRemoved(event: MarketRemoved): void {
   entity.markets = markets;
 
   entity.save();
+
+  decrementMarkets();
 }
 
 export function handleThresholdUpdated(event: ThresholdUpdated): void {}
@@ -85,6 +97,8 @@ export function handleVaultAdded(event: VaultAdded): void {
   entity.vaults = vaults;
 
   entity.save();
+
+  incrementVaults();
 }
 
 export function handleVaultRemoved(event: VaultRemoved): void {
@@ -95,4 +109,6 @@ export function handleVaultRemoved(event: VaultRemoved): void {
   entity.vaults = vaults;
 
   entity.save();
+
+  decrementVaults();
 }

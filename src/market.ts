@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { Placed, Settled, Borrowed, Repaid } from "../generated/Market/Market";
 import { Borrow, Repay, Registry, Bet } from "../generated/schema";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { incrementBets } from "./aggregator";
 
 function _isHorseLinkMarket(address: string): bool {
   const registry = Registry.load("registry");
@@ -42,6 +43,9 @@ export function handlePlaced(event: Placed): void {
   entity.settledAt = BigInt.zero();
 
   entity.save();
+
+  // increase bets
+  incrementBets();
 }
 
 export function handleSettled(event: Settled): void {

@@ -17,6 +17,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Registry
+        - Aggregator
       abis:
         - name: Registry
           file: ./abis/Registry.json
@@ -72,6 +73,7 @@ dataSources:
         - Borrow
         - Repay
         - Registry
+        - Aggregator
       abis:
         - name: Market
           file: ./abis/Market.json

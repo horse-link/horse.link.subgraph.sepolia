@@ -6,6 +6,15 @@ type Registry @entity {
   vaults: [String!]!
 }
 
+type Aggregator @entity {
+  # should be "aggregator"
+  id: ID!
+
+  totalMarkets: Int!
+  totalVaults: Int!
+  totalBets: Int!
+}
+
 type Deposit @entity {
   # tx hash
   id: ID!
