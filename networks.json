@@ -3,6 +3,12 @@
     "Registry": {
       "address": "0x0000000000000000000000000000000000000000",
       "startBlock": 0
+    },
+    "Vault": {
+      "startBlock": 0
+    },
+    "Market": {
+      "startBlock": 0
     }
   }
 }
