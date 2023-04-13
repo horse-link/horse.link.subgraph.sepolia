@@ -27,7 +27,7 @@ export function handleDeposit(event: DepositEvent): void {
   entity.assets = event.params.assets;
   entity.shares = event.params.shares;
 
-  entity.timestamp = event.block.timestamp;
+  entity.createdAt = event.block.timestamp;
 
   entity.save();
 }
@@ -45,7 +45,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
   entity.assets = event.params.assets;
   entity.shares = event.params.shares;
 
-  entity.timestamp = event.block.timestamp;
+  entity.createdAt = event.block.timestamp;
 
   entity.save();
 }

@@ -1,6 +1,7 @@
 type Registry @entity {
   # should be "registry"
   id: ID!
+
   markets: [String!]!
   vaults: [String!]!
 }
@@ -8,20 +9,59 @@ type Registry @entity {
 type Deposit @entity {
   # tx hash
   id: ID!
+
   sender: String!
   owner: String!
   assets: BigInt!
   shares: BigInt!
-  timestamp: BigInt!
+  createdAt: BigInt!
 }
 
 type Withdraw @entity {
   # tx hash
   id: ID!
+
   sender: String!
   receiver: String!
   owner: String!
   assets: BigInt!
   shares: BigInt!
-  timestamp: BigInt!
+  createdAt: BigInt!
+}
+
+type Borrow @entity {
+  # tx hash
+  id: ID!
+
+  # corresponds to a Bet ID -- BET_{market address}_{bet index}
+  betId: String!
+
+  amount: BigInt!
+  createdAt: BigInt!
+}
+
+type Repay @entity {
+  # tx hash
+  id: ID!
+
+  vault: String!
+  amount: BigInt!
+  createdAt: BigInt!
+}
+
+type Bet @entity {
+  # BET_{market address}_{bet index}
+  id: ID!
+
+  marketId: String!
+  propositionId: String!
+  amount: BigInt!
+  payout: BigInt!
+  owner: String!
+  createdAt: BigInt!
+
+  settled: Boolean!
+  result: BigInt!
+  recipient: String!
+  settledAt: BigInt!
 }
