@@ -1,6 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
-  Vault as VaultContract,
   Deposit as DepositEvent,
   Withdraw as WithdrawEvent
 } from "../generated/Vault/Vault";

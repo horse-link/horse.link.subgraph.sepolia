@@ -84,3 +84,4 @@ dataSources:
           handler: handleBorrowed
         - event: Repaid(indexed address,uint256)
           handler: handleRepaid
+      file: ./src/market.ts
