@@ -62,6 +62,9 @@ type Bet @entity {
   # BET_{market address}_{bet index}
   id: ID!
 
+  # misc bet args used on FE for sorting
+  asset: String!
+
   marketId: String!
   propositionId: String!
   amount: BigInt!

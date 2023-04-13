@@ -1,7 +1,14 @@
-import { Placed, Settled, Borrowed, Repaid } from "../generated/Market/Market";
+import {
+  Placed,
+  Settled,
+  Borrowed,
+  Repaid,
+  Market
+} from "../generated/Market/Market";
 import { Borrow, Repay, Registry, Bet } from "../generated/schema";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { incrementBets } from "./aggregator";
+import { Vault } from "../generated/Vault/Vault";
 
 function _isHorseLinkMarket(address: string): bool {
   const registry = Registry.load("registry");
@@ -24,6 +31,14 @@ export function handlePlaced(event: Placed): void {
 
   const id = _createBetId(marketAddress, event.params.index.toI32());
   const entity = new Bet(id);
+
+  // add misc bet args
+  const vaultAddress = Market.bind(
+    Address.fromString(marketAddress)
+  ).getVaultAddress();
+  entity.asset = Vault.bind(vaultAddress)
+    .asset()
+    .toHexString();
 
   entity.marketId = event.params.marketId.toString();
   entity.propositionId = event.params.propositionId.toString();
