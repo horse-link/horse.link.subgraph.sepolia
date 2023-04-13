@@ -40,13 +40,17 @@ export function handlePlaced(event: Placed): void {
     .asset()
     .toHexString();
 
+  const now = event.block.timestamp.toI32();
+  // 30 mins * 60 seconds per minute = 30 mins in seconds
+  entity.payoutAt = now + 30 * 60;
+
   entity.marketId = event.params.marketId.toString();
   entity.propositionId = event.params.propositionId.toString();
   entity.amount = event.params.amount;
   entity.payout = event.params.payout;
   entity.owner = event.params.owner.toHexString();
 
-  entity.createdAt = event.block.timestamp.toI32();
+  entity.createdAt = now;
 
   // zeroed
   entity.settled = false;
