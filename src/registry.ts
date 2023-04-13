@@ -15,9 +15,8 @@ import {
   decrementVaults
 } from "./aggregator";
 
-// TODO: fill in
 const ADDRESS = Address.fromString(
-  "0xBE0007d2A90fE50569374d5AA78644424D49F568"
+"0xBE0007d2A90fE50569374d5AA78644424D49F568"
 );
 
 function _getRegistry(): Registry {

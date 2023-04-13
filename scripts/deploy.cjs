@@ -36,18 +36,40 @@ directories.forEach((dir, i) => {
 
   // replace with new files
   files.forEach(file => {
-    const content = fs.readFileSync(path.join(configPath, dir, file));
+    const content = fs.readFileSync(path.join(configPath, dir, file), {
+      encoding: "utf-8"
+    });
     if (file.endsWith("json")) {
       fs.writeFileSync(path.join(topLevel, "networks.json"), content);
+
+      // replace hardcoded address in registry.ts with the one in the json, line 4
+      // hope it doesnt lint :fingers_crossed:
+      const address = content.split("\n")[3].split('"')[3];
+      console.log("\n    with registry", address);
+
+      const registryContent = fs
+        .readFileSync(path.join(topLevel, "src", "registry.ts"), {
+          encoding: "utf-8"
+        })
+        .split("\n");
+      // should be line 18
+      registryContent[18] = `"${address}"`;
+      const joinedContent = registryContent.join("\n");
+
+      fs.writeFileSync(
+        path.join(topLevel, "src", "registry.ts"),
+        joinedContent
+      );
     } else {
       fs.writeFileSync(path.join(topLevel, "subgraph.yaml"), content);
     }
   });
 
   // run depoyment script
-  console.log(`\ndeploying ${dir} to horse-link/horse-link-${dir}-dev...`);
+  const deployUrl = `horse-link/horselink-${dir}-test`;
+  console.log(`\ndeploying to ${deployUrl}...`);
   childProcess.execSync(
-    `graph deploy --node https://api.thegraph.com/deploy/ horse-link/horselink-${dir}-test`,
+    `graph deploy --node https://api.thegraph.com/deploy/ ${deployUrl}`,
     { encoding: "utf-8", stdio: "ignore" }
   );
   console.log("done!");
