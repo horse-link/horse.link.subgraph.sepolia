@@ -33,7 +33,7 @@ dataSources:
         - event: VaultRemoved(indexed address)
           handler: handleVaultRemoved
       file: ./src/registry.ts
-  
+
   - kind: ethereum
     name: Vault
     network: goerli
@@ -88,4 +88,6 @@ dataSources:
           handler: handleBorrowed
         - event: Repaid(indexed address,uint256)
           handler: handleRepaid
+        - event: Refunded(uint256,uint256,indexed address)
+          handler: handleRefunded
       file: ./src/market.ts
