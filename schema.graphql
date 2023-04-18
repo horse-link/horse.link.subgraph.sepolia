@@ -45,6 +45,7 @@ type Borrow @entity {
   # corresponds to a Bet ID -- BET_{market address}_{bet index}
   betId: String!
 
+  vault: String!
   amount: BigInt!
   createdAt: Int!
 }

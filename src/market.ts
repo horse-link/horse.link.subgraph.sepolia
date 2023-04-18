@@ -95,7 +95,7 @@ export function handleBorrowed(event: Borrowed): void {
 
   const entity = new Borrow(event.transaction.hash.toHexString());
   const betId = _createBetId(marketAddress, event.params.index.toI32());
-
+  entity.vault = event.params.vault.toHexString();
   entity.betId = betId;
   entity.amount = event.params.amount;
   entity.createdAt = event.block.timestamp.toI32();
