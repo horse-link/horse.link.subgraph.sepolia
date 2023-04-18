@@ -78,4 +78,6 @@ type Bet @entity {
   result: Int!
   recipient: String!
   settledAt: Int!
+
+  refunded: Boolean!
 }

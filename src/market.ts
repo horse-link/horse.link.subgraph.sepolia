@@ -3,7 +3,8 @@ import {
   Settled,
   Borrowed,
   Repaid,
-  Market
+  Market,
+  Refunded
 } from "../generated/Market/Market";
 import { Borrow, Repay, Registry, Bet } from "../generated/schema";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
@@ -112,6 +113,26 @@ export function handleRepaid(event: Repaid): void {
   entity.vault = event.params.vault.toHexString();
   entity.amount = event.params.amount;
   entity.createdAt = event.block.timestamp.toI32();
+
+  entity.save();
+}
+
+export function handleRefunded(event: Refunded): void {
+  const marketAddress = event.address.toHexString();
+  if (!_isHorseLinkMarket(marketAddress)) {
+    return;
+  }
+
+  const id = _createBetId(marketAddress, event.params.index.toI32());
+  const entity = Bet.load(id);
+  if (!entity) {
+    throw new Error(`Cannot get bet, ${id}`);
+  }
+
+  entity.settled = true;
+  entity.recipient = event.params.recipient.toHexString();
+  entity.settledAt = event.block.timestamp.toI32();
+  entity.refunded = true;
 
   entity.save();
 }
