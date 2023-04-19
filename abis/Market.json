@@ -8,7 +8,7 @@
       },
       {
         "internalType": "uint8",
-        "name": "margin",
+        "name": "fee",
         "type": "uint8"
       },
       {
@@ -23,7 +23,7 @@
       },
       {
         "internalType": "string",
-        "name": "metadataBaseURI",
+        "name": "baseMetadataURI",
         "type": "string"
       }
     ],
@@ -83,6 +83,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "vault",
+        "type": "address"
+      },
       {
         "indexed": false,
         "internalType": "uint256",
@@ -175,6 +181,12 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       }
     ],
     "name": "Refunded",
@@ -254,6 +266,58 @@
     ],
     "name": "Transfer",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "LOSER",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "NULL",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "SCRATCHED",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "WINNER",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -504,6 +568,25 @@
         "type": "bytes16"
       }
     ],
+    "name": "getMarketCollateral",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes16",
+        "name": "marketId",
+        "type": "bytes16"
+      }
+    ],
     "name": "getMarketTotal",
     "outputs": [
       {
@@ -599,6 +682,19 @@
       }
     ],
     "name": "getPotentialPayout",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalCollateral",
     "outputs": [
       {
         "internalType": "uint256",
@@ -836,6 +932,13 @@
       }
     ],
     "name": "refund",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundCollateral",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
