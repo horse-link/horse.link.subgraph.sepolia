@@ -8,9 +8,9 @@ dataSources:
     name: Registry
     network: arbitrum-one
     source:
-      address: "0x33Ce0448DEFb2d94Af326C50c39FA20fB53C227a"
+      address: "0xeF3f2e909BFD8D45371F330311f4465A0C2F7760"
       abi: Registry
-      startBlock: 79174517
+      startBlock: 81983595
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -33,13 +33,13 @@ dataSources:
         - event: VaultRemoved(indexed address)
           handler: handleVaultRemoved
       file: ./src/registry.ts
-  
+
   - kind: ethereum
     name: Vault
     network: arbitrum-one
     source:
       abi: Vault
-      startBlock: 79174517
+      startBlock: 81983595
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -63,7 +63,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: Market
-      startBlock: 79174517
+      startBlock: 81983595
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -84,8 +84,10 @@ dataSources:
           handler: handlePlaced
         - event: Settled(uint256,uint256,uint8,indexed address)
           handler: handleSettled
-        - event: Borrowed(uint256,uint256)
+        - event: Borrowed(indexed address,uint256,uint256)
           handler: handleBorrowed
         - event: Repaid(indexed address,uint256)
           handler: handleRepaid
+        - event: Refunded(uint256,uint256,indexed address)
+          handler: handleRefunded
       file: ./src/market.ts
