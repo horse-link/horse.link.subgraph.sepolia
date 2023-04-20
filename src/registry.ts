@@ -16,7 +16,7 @@ import {
 } from "./aggregator";
 
 const ADDRESS = Address.fromString(
-"0xBE0007d2A90fE50569374d5AA78644424D49F568"
+"0x6e1312e283D4152d42006dc8Eaf11A433D739fB0"
 );
 
 function _getRegistry(): Registry {
