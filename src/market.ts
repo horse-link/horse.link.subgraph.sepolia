@@ -61,6 +61,7 @@ export function handlePlaced(event: Placed): void {
   entity.result = 0;
   entity.recipient = Address.zero().toHexString();
   entity.settledAt = BigInt.zero().toI32();
+  entity.refunded = false;
 
   entity.save();
 
