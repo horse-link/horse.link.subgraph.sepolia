@@ -30,9 +30,9 @@ function _getRegistry(): Registry {
   return entity;
 }
 
-function _updateMarkets(): string[] {
+function _updateMarkets(registryAddress: Address): string[] {
   // when a market is added the state is updated
-  const totalMarkets = RegistryContract.bind(ADDRESS)
+  const totalMarkets = RegistryContract.bind(registryAddress)
     .marketCount()
     .toI32();
   const newMarketsArray = new Array<string>(totalMarkets).map<string>(
@@ -46,9 +46,9 @@ function _updateMarkets(): string[] {
   return newMarketsArray;
 }
 
-function _updateVaults(): string[] {
+function _updateVaults(registryAddress: Address): string[] {
   // same for vaults
-  const totalVaults = RegistryContract.bind(ADDRESS)
+  const totalVaults = RegistryContract.bind(registryAddress)
     .vaultCount()
     .toI32();
   const newVaultsArray = new Array<string>(totalVaults).map<string>(
@@ -65,7 +65,7 @@ function _updateVaults(): string[] {
 export function handleMarketAdded(event: MarketAdded): void {
   const entity = _getRegistry();
 
-  const markets = _updateMarkets();
+  const markets = _updateMarkets(event.address);
 
   entity.markets = markets;
 
@@ -77,7 +77,7 @@ export function handleMarketAdded(event: MarketAdded): void {
 export function handleMarketRemoved(event: MarketRemoved): void {
   const entity = _getRegistry();
 
-  const markets = _updateMarkets();
+  const markets = _updateMarkets(event.address);
 
   entity.markets = markets;
 
@@ -91,7 +91,7 @@ export function handleThresholdUpdated(event: ThresholdUpdated): void {}
 export function handleVaultAdded(event: VaultAdded): void {
   const entity = _getRegistry();
 
-  const vaults = _updateVaults();
+  const vaults = _updateVaults(event.address);
 
   entity.vaults = vaults;
 
@@ -103,7 +103,7 @@ export function handleVaultAdded(event: VaultAdded): void {
 export function handleVaultRemoved(event: VaultRemoved): void {
   const entity = _getRegistry();
 
-  const vaults = _updateVaults();
+  const vaults = _updateVaults(event.address);
 
   entity.vaults = vaults;
 
