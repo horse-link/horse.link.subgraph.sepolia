@@ -1,0 +1,26 @@
+{
+    "arbitrum-one": {
+      "Registry": {
+        "address": "0x43f3bb55952cfF292e629c440e326C3b8B886423",
+        "startBlock": 83637351
+      },
+      "Vault": {
+        "startBlock": 83637351
+      },
+      "Market": {
+        "startBlock": 83637351
+      }
+    },
+    "goerli": {
+      "Registry": {
+        "address": "0xCc786B9948B0c33665400f82d3E8518D4Df28447",
+        "startBlock": 8869912
+      },
+      "Vault": {
+        "startBlock": 8869912
+      },
+      "Market": {
+        "startBlock": 8869912
+      }
+    }
+  }

@@ -1,14 +1,19 @@
 {
-  "name": "horse-link-sepolia-dev",
+  "name": "horse-link-subgraph",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "node scripts/deploy.cjs"
+    "build": "graph codegen && graph build",
+    "deploy:test_goerli": "yarn build --network-file ./configs/test.json --network goerli && yarn deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-arbitrum",
+    "deploy:test_arbitrum": "yarn build --network-file ./configs/test.json --network arbitrum-one && yarn deploy --node https://api.thegraph.com/deploy horse-link/horselink-arbitrum-test",
+    "deploy:dev_goerli": "yarn build --network-file ./configs/dev.json --network goerli && yarn deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-dev-goerli",
+    "deploy:dev_arbitrum": "yarn build --network-file ./configs/dev.json --network arbitrum-one && yarn deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-dev-arbitrum",
+    "deploy:prod_goerli": "yarn build --network-file ./configs/prod.json --network goerli && yarn deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-goerli",
+    "deploy:prod_arbitrum": "yarn build --network-file ./configs/prod.json --network arbitrum-one && yarn deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-arbitrum"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.46.1",
-    "@graphprotocol/graph-ts": "0.29.1"
+    "@graphprotocol/graph-ts": "^0.29.3"
   },
   "devDependencies": {
     "matchstick-as": "0.5.0"
