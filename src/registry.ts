@@ -15,10 +15,6 @@ import {
   decrementVaults
 } from "./aggregator";
 
-const ADDRESS = Address.fromString(
-"0x6e1312e283D4152d42006dc8Eaf11A433D739fB0"
-);
-
 function _getRegistry(): Registry {
   let entity = Registry.load("registry");
   if (!entity) {
@@ -32,33 +28,23 @@ function _getRegistry(): Registry {
 
 function _updateMarkets(registryAddress: Address): string[] {
   // when a market is added the state is updated
-  const totalMarkets = RegistryContract.bind(registryAddress)
-    .marketCount()
-    .toI32();
-  const newMarketsArray = new Array<string>(totalMarkets).map<string>(
-    (_, index) => {
-      return RegistryContract.bind(ADDRESS)
-        .markets(BigInt.fromI32(index))
-        .toHexString();
-    }
-  );
-
+  const registry = RegistryContract.bind(registryAddress);
+  const totalMarkets = registry.marketCount().toI32();
+  const newMarketsArray = new Array<string>(totalMarkets);
+  for (let i = 0; i < totalMarkets; i++) {
+    newMarketsArray[i] = registry.markets(BigInt.fromI32(i)).toHexString();
+  }
   return newMarketsArray;
 }
 
 function _updateVaults(registryAddress: Address): string[] {
   // same for vaults
-  const totalVaults = RegistryContract.bind(registryAddress)
-    .vaultCount()
-    .toI32();
-  const newVaultsArray = new Array<string>(totalVaults).map<string>(
-    (_, index) => {
-      return RegistryContract.bind(ADDRESS)
-        .vaults(BigInt.fromI32(index))
-        .toHexString();
-    }
-  );
-
+  const registry = RegistryContract.bind(registryAddress);
+  const totalVaults = registry.vaultCount().toI32();
+  const newVaultsArray = new Array<string>(totalVaults);
+  for (let i = 0; i < totalVaults; i++) {
+    newVaultsArray[i] = registry.vaults(BigInt.fromI32(i)).toHexString();
+  }
   return newVaultsArray;
 }
 
