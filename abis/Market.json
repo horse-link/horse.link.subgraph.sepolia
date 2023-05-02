@@ -2,13 +2,13 @@
   {
     "inputs": [
       {
-        "internalType": "contract IVault",
+        "internalType": "address",
         "name": "vault",
         "type": "address"
       },
       {
         "internalType": "uint8",
-        "name": "fee",
+        "name": "margin",
         "type": "uint8"
       },
       {
@@ -23,7 +23,7 @@
       },
       {
         "internalType": "string",
-        "name": "baseMetadataURI",
+        "name": "metadataBaseURI",
         "type": "string"
       }
     ],
@@ -568,25 +568,6 @@
         "type": "bytes16"
       }
     ],
-    "name": "getMarketCollateral",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes16",
-        "name": "marketId",
-        "type": "bytes16"
-      }
-    ],
     "name": "getMarketTotal",
     "outputs": [
       {
@@ -682,19 +663,6 @@
       }
     ],
     "name": "getPotentialPayout",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTotalCollateral",
     "outputs": [
       {
         "internalType": "uint256",
@@ -932,13 +900,6 @@
       }
     ],
     "name": "refund",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "refundCollateral",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
