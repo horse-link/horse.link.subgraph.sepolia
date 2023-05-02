@@ -74,6 +74,7 @@ type Bet @entity {
   payout: BigInt!
   owner: String!
   createdAt: Int!
+  createdAtTx: String!
 
   settled: Boolean!
   result: Int!

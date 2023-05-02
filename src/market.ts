@@ -55,6 +55,7 @@ export function handlePlaced(event: Placed): void {
   entity.owner = event.params.owner.toHexString();
 
   entity.createdAt = now;
+  entity.createdAtTx = event.transaction.hash.toHexString();
 
   // zeroed
   entity.settled = false;
