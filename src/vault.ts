@@ -20,6 +20,7 @@ export function handleDeposit(event: DepositEvent): void {
 
   const entity = new Deposit(event.transaction.hash.toHexString());
 
+  entity.vault = event.address.toHexString();
   entity.sender = event.params.sender.toHexString();
   entity.owner = event.params.owner.toHexString();
   entity.assets = event.params.assets;
@@ -37,6 +38,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
 
   const entity = new Withdraw(event.transaction.hash.toHexString());
 
+  entity.vault = event.address.toHexString();
   entity.sender = event.params.sender.toHexString();
   entity.receiver = event.params.receiver.toHexString();
   entity.owner = event.params.owner.toHexString();

@@ -19,6 +19,7 @@ type Deposit @entity {
   # tx hash
   id: ID!
 
+  vault: String!
   sender: String!
   owner: String!
   assets: BigInt!
@@ -30,6 +31,7 @@ type Withdraw @entity {
   # tx hash
   id: ID!
 
+  vault: String!
   sender: String!
   receiver: String!
   owner: String!
