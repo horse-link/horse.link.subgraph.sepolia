@@ -5,11 +5,11 @@
     "codegen": "graph codegen",
     "build": "graph codegen && graph build",
     "deploy:test_goerli": "yarn build --network-file ./configs/test.json --network goerli && graph deploy --node https://api.thegraph.com/deploy/ horse-link/horselink-goerli-test",
-    "deploy:test_arbitrum": "yarn build --network-file ./configs/test.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy horse-link/horselink-arbitrum-test",
-    "deploy:dev_goerli": "yarn build --network-file ./configs/dev.json --network goerli && graph deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-dev-goerli",
-    "deploy:dev_arbitrum": "yarn build --network-file ./configs/dev.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-dev-arbitrum",
-    "deploy:prod_goerli": "yarn build --network-file ./configs/prod.json --network goerli && graph deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-goerli",
-    "deploy:prod_arbitrum": "yarn build --network-file ./configs/prod.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy horse-link/hl-protocol-arbitrum"
+    "deploy:test_arbitrum": "yarn build --network-file ./configs/test.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy/ horse-link/horselink-arbitrum-test",
+    "deploy:dev_goerli": "yarn build --network-file ./configs/dev.json --network goerli && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-dev-goerli",
+    "deploy:dev_arbitrum": "yarn build --network-file ./configs/dev.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-dev-arbitrum",
+    "deploy:prod_goerli": "yarn build --network-file ./configs/prod.json --network goerli && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-goerli",
+    "deploy:prod_arbitrum": "yarn build --network-file ./configs/prod.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-arbitrum"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.46.1",
