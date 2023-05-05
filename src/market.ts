@@ -62,6 +62,7 @@ export function handlePlaced(event: Placed): void {
   entity.result = 0;
   entity.recipient = Address.zero().toHexString();
   entity.settledAt = BigInt.zero().toI32();
+  entity.settledAtTx = "";
   entity.refunded = false;
 
   entity.save();
@@ -86,6 +87,7 @@ export function handleSettled(event: Settled): void {
   entity.result = event.params.result;
   entity.recipient = event.params.recipient.toHexString();
   entity.settledAt = event.block.timestamp.toI32();
+  entity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
 
   entity.save();
 }
@@ -134,6 +136,7 @@ export function handleRefunded(event: Refunded): void {
   entity.settled = true;
   entity.recipient = event.params.recipient.toHexString();
   entity.settledAt = event.block.timestamp.toI32();
+  entity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
   entity.refunded = true;
 
   entity.save();
