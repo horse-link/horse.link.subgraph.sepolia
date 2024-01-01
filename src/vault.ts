@@ -9,7 +9,7 @@ import {
 import { getVaultDecimals, isHorseLinkVault } from "./addresses";
 import { amountFromDecimalsToEther } from "./utils/formatting";
 import { changeProtocolTvl } from "./utils/protocol";
-import { changeUserTotalDepsited } from "./utils/user";
+import { changeUserTotalDeposited } from "./utils/user";
 import { createDeposit, createWithdrawal } from "./utils/vault-transaction";
 
 export function handleApproval(event: Approval): void {}
@@ -31,7 +31,7 @@ export function handleDeposit(event: Deposit): void {
   createDeposit(event.params, value, event.transaction, event.block.timestamp, address);
 
   // increase total deposited for user
-  changeUserTotalDepsited(event.params.sender, value, true, event.block.timestamp);
+  changeUserTotalDeposited(event.params.sender, value, true, event.block.timestamp);
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -55,5 +55,5 @@ export function handleWithdraw(event: Withdraw): void {
   createWithdrawal(event.params, value, event.transaction, event.block.timestamp, address);
 
   // decrease total deposited for user
-  changeUserTotalDepsited(event.params.sender, value, false, event.block.timestamp);
+  changeUserTotalDeposited(event.params.sender, value, false, event.block.timestamp);
 }

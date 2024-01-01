@@ -35,7 +35,7 @@ export function changeUserPnl(address: Address, pnlDelta: BigInt, isIncrease: bo
   userEntity.save();
 };
 
-export function changeUserTotalDepsited(address: Address, depositedDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
+export function changeUserTotalDeposited(address: Address, depositedDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
   const userEntity = _getUser(address);
 
   const currentDeposited = userEntity.totalDeposited;

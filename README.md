@@ -8,7 +8,9 @@ yarn codegen
 yarn build
 ```
 
-Then get your acess token from ...
+Then get your access token from the graph dashboard.
+
+![Alt text](image.png)
 
 ```bash
 graph auth --product hosted-service <token>
