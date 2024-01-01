@@ -1,37 +1,12 @@
-specVersion: 0.0.5
+specVersion: 0.0.4
+description: HL Protocol Sepolia
+repository: https://github.com/horse-link/horse.link.subgraph.sepolia
 schema:
   file: ./schema.graphql
+
 dataSources:
-  - kind: ethereum
-    name: Registry
-    network: sepolia
-    source:
-      abi: Registry
-      address: "0x0b0621a6fA780A12E272727cC1aca57b842596C5"
-      startBlock: 4980000
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Registry
-        - Aggregator
-      abis:
-        - name: Registry
-          file: ./abis/Registry.json
-      eventHandlers:
-        - event: MarketAdded(indexed address)
-          handler: handleMarketAdded
-        - event: MarketRemoved(indexed address)
-          handler: handleMarketRemoved
-        - event: ThresholdUpdated(uint256)
-          handler: handleThresholdUpdated
-        - event: VaultAdded(indexed address)
-          handler: handleVaultAdded
-        - event: VaultRemoved(indexed address)
-          handler: handleVaultRemoved
-      file: ./src/registry.ts
-  - kind: ethereum
+  # VAULTS
+  - kind: ethereum/contract
     name: Vault
     network: sepolia
     source:
@@ -39,22 +14,29 @@ dataSources:
       startBlock: 4980000
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Registry
-        - Deposit
-        - Withdraw
+        - Protocol
+        - VaultTransaction
       abis:
         - name: Vault
           file: ./abis/Vault.json
       eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
         - event: Deposit(indexed address,indexed address,uint256,uint256)
           handler: handleDeposit
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
         - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleWithdraw
+          handler: handleWithdraw 
       file: ./src/vault.ts
-  - kind: ethereum
+
+  # MARKETS
+  - kind: ethereum/contract
     name: Market
     network: sepolia
     source:
@@ -62,13 +44,11 @@ dataSources:
       startBlock: 4980000
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
+        - Protocol
         - Bet
-        - Borrow
-        - Repay
-        - Registry
         - Aggregator
       abis:
         - name: Market
@@ -82,8 +62,31 @@ dataSources:
           handler: handlePlaced
         - event: Settled(uint256,uint256,uint8,indexed address)
           handler: handleSettled
-        - event: Borrowed(indexed address,uint256,uint256)
-          handler: handleBorrowed
-        - event: Repaid(indexed address,uint256)
-          handler: handleRepaid
       file: ./src/market.ts
+
+  # REGISTRY
+  - kind: ethereum/contract
+    name: Registry
+    network: sepolia
+    source:
+      address: '0xa110D6Bd21c226285b18f91b1749eBc12007a7E7'
+      abi: Registry
+      startBlock: 4980000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Registry
+        - Aggregator
+      abis:
+        - name: Registry
+          file: ./abis/Registry.json
+      eventHandlers:
+        - event: MarketAdded(indexed address)
+          handler: handleMarketAdded
+        - event: ThresholdUpdated(uint256)
+          handler: handleThresholdUpdated
+        - event: VaultAdded(indexed address)
+          handler: handleVaultAdded
+      file: ./src/registry.ts

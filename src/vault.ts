@@ -1,51 +1,59 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
-  Deposit as DepositEvent,
-  Withdraw as WithdrawEvent
+  Approval,
+  Deposit,
+  OwnershipTransferred,
+  Transfer,
+  Withdraw,
 } from "../generated/Vault/Vault";
-import { Deposit, Withdraw, Registry } from "../generated/schema";
+import { getVaultDecimals, isHorseLinkVault } from "./addresses";
+import { amountFromDecimalsToEther } from "./utils/formatting";
+import { changeProtocolTvl } from "./utils/protocol";
+import { changeUserTotalDepsited } from "./utils/user";
+import { createDeposit, createWithdrawal } from "./utils/vault-transaction";
 
-function _isHorseLinkVault(address: string): bool {
-  const registry = Registry.load("registry");
-  if (!registry) {
-    throw new Error("No registry");
-  }
+export function handleApproval(event: Approval): void {}
 
-  return registry.vaults.includes(address);
-}
-
-export function handleDeposit(event: DepositEvent): void {
-  if (!_isHorseLinkVault(event.address.toHexString())) {
+export function handleDeposit(event: Deposit): void {
+  const address = event.address.toHexString();
+  // check if the event comes from a horse link vault, if not do nothing
+  if (isHorseLinkVault(address) == false) {
+    log.info(`${address} is not a horse link vault`, []);
     return;
   }
 
-  const entity = new Deposit(event.transaction.hash.toHexString());
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.assets, decimals);
 
-  entity.vault = event.address.toHexString();
-  entity.sender = event.params.sender.toHexString();
-  entity.owner = event.params.owner.toHexString();
-  entity.assets = event.params.assets;
-  entity.shares = event.params.shares;
+  // deposits increase the tvl in the protocol
+  changeProtocolTvl(value, true, event.block.timestamp);
+  createDeposit(event.params, value, event.transaction, event.block.timestamp, address);
 
-  entity.createdAt = event.block.timestamp.toI32();
-
-  entity.save();
+  // increase total deposited for user
+  changeUserTotalDepsited(event.params.sender, value, true, event.block.timestamp);
 }
 
-export function handleWithdraw(event: WithdrawEvent): void {
-  if (!_isHorseLinkVault(event.address.toHexString())) {
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+
+export function handleTransfer(event: Transfer): void {}
+
+export function handleWithdraw(event: Withdraw): void {
+  const address = event.address.toHexString();
+  // check if the event comes from a horse link vault, if not do nothing
+  if (isHorseLinkVault(address) == false) {
+    log.info(`${address} is not a horse link vault`, []);
     return;
   }
 
-  const entity = new Withdraw(event.transaction.hash.toHexString());
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.assets, decimals);
 
-  entity.vault = event.address.toHexString();
-  entity.sender = event.params.sender.toHexString();
-  entity.receiver = event.params.receiver.toHexString();
-  entity.owner = event.params.owner.toHexString();
-  entity.assets = event.params.assets;
-  entity.shares = event.params.shares;
+  // withdraws decrease the tvl in the protocol
+  changeProtocolTvl(value, false, event.block.timestamp);
+  createWithdrawal(event.params, value, event.transaction, event.block.timestamp, address);
 
-  entity.createdAt = event.block.timestamp.toI32();
-
-  entity.save();
+  // decrease total deposited for user
+  changeUserTotalDepsited(event.params.sender, value, false, event.block.timestamp);
 }

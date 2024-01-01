@@ -1,22 +1,16 @@
 {
-  "name": "horse-link-subgraph",
+  "name": "horse.link.subgraph.sepolia",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "build": "graph codegen && graph build",
-    "deploy:test_goerli": "yarn build --network-file ./configs/test.json --network goerli && graph deploy --node https://api.thegraph.com/deploy/ horse-link/horselink-goerli-test",
-    "deploy:test_arbitrum": "yarn build --network-file ./configs/test.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy/ horse-link/horselink-arbitrum-test",
-    "deploy:dev_goerli": "yarn build --network-file ./configs/dev.json --network goerli && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-dev-goerli",
-    "deploy:dev_arbitrum": "yarn build --network-file ./configs/dev.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-dev-arbitrum",
-    "deploy:prod_goerli": "yarn build --network-file ./configs/prod.json --network goerli && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-goerli",
-    "deploy:prod_arbitrum": "yarn build --network-file ./configs/prod.json --network arbitrum-one && graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-arbitrum"
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-sepolia",
+    "create-local": "graph create --node http://localhost:8020/ horse-link/hl-protocol-graph",
+    "remove-local": "graph remove --node http://localhost:8020/ horse-link/hl-protocol-graph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 horse-link/hl-protocol-sepolia"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.64.1",
-    "@graphprotocol/graph-ts": "^0.29.3",
-    "global": "^4.4.0"
-  },
-  "devDependencies": {
-    "matchstick-as": "0.5.0"
+    "@graphprotocol/graph-cli": "0.35.0",
+    "@graphprotocol/graph-ts": "0.28.1"
   }
 }

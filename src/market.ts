@@ -1,13 +1,11 @@
 import { log } from "@graphprotocol/graph-ts";
 import {
-  Borrowed,
   OwnershipTransferred,
   Placed,
-  Repaid,
   Settled,
   Transfer
 } from "../generated/Market/Market";
-import { Bet, Borrow, Repay } from "../generated/schema";
+import { Bet } from "../generated/schema";
 import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
 import { createBetEntity, getBetId } from "./utils/bet";
 import { amountFromDecimalsToEther } from "./utils/formatting";
@@ -54,14 +52,7 @@ export function handlePlaced(event: Placed): void {
   const payout = amountFromDecimalsToEther(event.params.payout, decimals);
 
   // create new bet entity and return it so its properties can be referenced when updating the protocol entity
-  const newBetEntity = createBetEntity(
-    event.params,
-    amount,
-    payout,
-    event.block.timestamp,
-    address,
-    event.transaction.hash
-  );
+  const newBetEntity = createBetEntity(event.params, amount, payout, event.block.timestamp, address, event.transaction.hash);
 
   // exposure is calculated by the payout minus the bet amount
   const exposure = newBetEntity.payout.minus(newBetEntity.amount);
@@ -77,7 +68,7 @@ export function handlePlaced(event: Placed): void {
 export function handleSettled(event: Settled): void {
   const WINNER = 0x01;
   const LOSER = 0x02;
-  const SCRATCHED = 0x03;
+	const SCRATCHED = 0x03;
   const address = event.address.toHexString();
   if (isHorseLinkMarket(address) == false) {
     log.info(`${address} is not a horse link market`, []);
@@ -109,12 +100,7 @@ export function handleSettled(event: Settled): void {
   const payout = amountFromDecimalsToEther(event.params.payout, decimals);
 
   // decrease user in play
-  changeUserInPlay(
-    event.params.recipient,
-    betEntity.amount,
-    false,
-    event.block.timestamp
-  );
+  changeUserInPlay(event.params.recipient, betEntity.amount, false, event.block.timestamp);
 
   // decrease in play by amount
   changeProtocolInPlay(betEntity.amount, false, event.block.timestamp);
@@ -124,23 +110,13 @@ export function handleSettled(event: Settled): void {
     changeProtocolTvl(payout, false, event.block.timestamp);
 
     // increase user pnl by exposure
-    changeUserPnl(
-      event.params.recipient,
-      payout.minus(betEntity.amount),
-      true,
-      event.block.timestamp
-    );
+    changeUserPnl(event.params.recipient, payout.minus(betEntity.amount), true, event.block.timestamp);
   } else if (event.params.result == LOSER) {
     // if the user lost, tvl is *increased* by original amount
     changeProtocolTvl(betEntity.amount, true, event.block.timestamp);
 
     // decrease user pnl
-    changeUserPnl(
-      event.params.recipient,
-      betEntity.amount,
-      false,
-      event.block.timestamp
-    );
+    changeUserPnl(event.params.recipient, betEntity.amount, false, event.block.timestamp);
   } else if (event.params.result == SCRATCHED) {
     const lay = payout.minus(betEntity.amount);
     changeProtocolTvl(lay, false, event.block.timestamp);
@@ -150,47 +126,4 @@ export function handleSettled(event: Settled): void {
   }
 
   betEntity.save();
-}
-
-export function handleBorrowed(event: Borrowed): void {
-  const address = event.address.toHexString();
-  if (isHorseLinkMarket(address) == false) {
-    log.info(`${address} is not a horse link market`, []);
-    return;
-  }
-
-  // format amount to 18 decimals
-  const decimals = getMarketDecimals(event.address);
-  const amount = amountFromDecimalsToEther(event.params.amount, decimals);
-
-  const entity = new Borrow(event.transaction.hash.toHexString());
-
-  entity.amount = amount;
-  entity.betIndex = event.params.index;
-  entity.vaultAddress = event.params.vault.toHexString();
-
-  entity.createdAt = event.block.timestamp;
-
-  entity.save();
-}
-
-export function handleRepaid(event: Repaid): void {
-  const address = event.address.toHexString();
-  if (isHorseLinkMarket(address) == false) {
-    log.info(`${address} is not a horse link market`, []);
-    return;
-  }
-
-  // format amount to 18 decimals
-  const decimals = getMarketDecimals(event.address);
-  const amount = amountFromDecimalsToEther(event.params.amount, decimals);
-
-  const entity = new Repay(event.transaction.hash.toHexString());
-
-  entity.amount = amount;
-  entity.vaultAddress = event.params.vault.toHexString();
-
-  entity.createdAt = event.block.timestamp;
-
-  entity.save();
 }

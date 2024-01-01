@@ -77,38 +77,6 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "market",
-        "type": "address"
-      }
-    ],
-    "name": "MarketRemoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "market",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "rate",
-        "type": "uint256"
-      }
-    ],
-    "name": "MarketSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
@@ -391,33 +359,7 @@
   },
   {
     "inputs": [],
-    "name": "getOwner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getPerformance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getRate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -717,13 +659,6 @@
   },
   {
     "inputs": [],
-    "name": "removeMarket",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -739,11 +674,6 @@
       {
         "internalType": "uint256",
         "name": "max",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "rate",
         "type": "uint256"
       }
     ],
