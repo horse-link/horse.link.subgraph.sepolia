@@ -1,26 +1,26 @@
 {
-    "arbitrum-one": {
-      "Registry": {
-        "address": "0x95a78fB95A08ed521e587C77895Dc79F2b754628",
-        "startBlock": 82632742
-      },
-      "Vault": {
-        "startBlock": 82632742
-      },
-      "Market": {
-        "startBlock": 82632742
-      }
+  "arbitrum-one": {
+    "Registry": {
+      "address": "0x95a78fB95A08ed521e587C77895Dc79F2b754628",
+      "startBlock": 82632742
     },
-    "goerli": {
-      "Registry": {
-        "address": "0x728d9D69107FE9E81DCE86926aC2a1B65b812a92",
-        "startBlock": 8864024
-      },
-      "Vault": {
-        "startBlock": 8864024
-      },
-      "Market": {
-        "startBlock": 8864024
-      }
+    "Vault": {
+      "startBlock": 82632742
+    },
+    "Market": {
+      "startBlock": 82632742
+    }
+  },
+  "sepolia": {
+    "Registry": {
+      "address": "0x0b0621a6fA780A12E272727cC1aca57b842596C5",
+      "startBlock": 4980000
+    },
+    "Vault": {
+      "startBlock": 4980000
+    },
+    "Market": {
+      "startBlock": 4980000
     }
   }
+}

@@ -1,143 +1,196 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
-  Placed,
-  Settled,
   Borrowed,
+  OwnershipTransferred,
+  Placed,
   Repaid,
-  Market,
-  Refunded
+  Settled,
+  Transfer
 } from "../generated/Market/Market";
-import { Borrow, Repay, Registry, Bet } from "../generated/schema";
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { incrementBets } from "./aggregator";
-import { Vault } from "../generated/Vault/Vault";
+import { Bet, Borrow, Repay } from "../generated/schema";
+import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
+import { createBetEntity, getBetId } from "./utils/bet";
+import { amountFromDecimalsToEther } from "./utils/formatting";
+import { changeProtocolInPlay, changeProtocolTvl } from "./utils/protocol";
+import { changeUserInPlay, changeUserPnl } from "./utils/user";
 
-function _isHorseLinkMarket(address: string): bool {
-  const registry = Registry.load("registry");
-  if (!registry) {
-    throw new Error("No Registry");
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+
+export function handleTransfered(event: Transfer): void {
+  const address = event.address.toHexString();
+  // check if event comes from horse link market, if not do nothing
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
+    return;
   }
 
-  return registry.markets.includes(address);
-}
+  // ease of referencing
+  const id = event.params.tokenId.toString().toLowerCase();
 
-function _createBetId(address: string, id: i32): string {
-  return `BET_${address}_${id}`;
+  // format id
+  const betId = getBetId(id, address);
+
+  const betEntity = Bet.load(betId);
+  if (betEntity == null) {
+    log.error(`Could not find reference entity with id ${betId}`, []);
+    return;
+  }
+
+  betEntity.owner = event.params.to.toHexString();
+  betEntity.save();
 }
 
 export function handlePlaced(event: Placed): void {
-  const marketAddress = event.address.toHexString();
-  if (!_isHorseLinkMarket(marketAddress)) {
+  const address = event.address.toHexString();
+  // check if event comes from horse link market, if not do nothing
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
     return;
   }
 
-  const id = _createBetId(marketAddress, event.params.index.toI32());
-  const entity = new Bet(id);
+  // get amount and payout to 18 decimal precision
+  const decimals = getMarketDecimals(event.address);
+  const amount = amountFromDecimalsToEther(event.params.amount, decimals);
+  const payout = amountFromDecimalsToEther(event.params.payout, decimals);
 
-  // add misc bet args
-  entity.market = marketAddress;
+  // create new bet entity and return it so its properties can be referenced when updating the protocol entity
+  const newBetEntity = createBetEntity(
+    event.params,
+    amount,
+    payout,
+    event.block.timestamp,
+    address,
+    event.transaction.hash
+  );
 
-  const vaultAddress = Market.bind(
-    Address.fromString(marketAddress)
-  ).getVaultAddress();
+  // exposure is calculated by the payout minus the bet amount
+  const exposure = newBetEntity.payout.minus(newBetEntity.amount);
 
-  entity.asset = Vault.bind(vaultAddress)
-    .asset()
-    .toHexString();
+  // placed bets increase total in play by the bet amount which can come from the new entity, exposure increases tvl
+  changeProtocolInPlay(amount, true, event.block.timestamp);
+  changeProtocolTvl(exposure, true, event.block.timestamp);
 
-  const now = event.block.timestamp.toI32();
-  // 30 mins * 60 seconds per minute = 30 mins in seconds
-  entity.payoutAt = now + 30 * 60;
-
-  entity.marketId = event.params.marketId.toString();
-  entity.propositionId = event.params.propositionId.toString();
-  entity.amount = event.params.amount;
-  entity.payout = event.params.payout;
-  entity.owner = event.params.owner.toHexString();
-
-  entity.createdAt = now;
-  entity.createdAtTx = event.transaction.hash.toHexString();
-
-  // zeroed
-  entity.settled = false;
-  entity.result = 0;
-  entity.recipient = Address.zero().toHexString();
-  entity.settledAt = BigInt.zero().toI32();
-  entity.settledAtTx = "";
-  entity.refunded = false;
-
-  entity.save();
-
-  // increase bets
-  incrementBets();
+  // increase total in play for user
+  changeUserInPlay(event.params.owner, amount, true, event.block.timestamp);
 }
 
 export function handleSettled(event: Settled): void {
-  const marketAddress = event.address.toHexString();
-  if (!_isHorseLinkMarket(marketAddress)) {
+  const WINNER = 0x01;
+  const LOSER = 0x02;
+  const SCRATCHED = 0x03;
+  const address = event.address.toHexString();
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
     return;
   }
 
-  const id = _createBetId(marketAddress, event.params.index.toI32());
-  const entity = Bet.load(id);
-  if (!entity) {
-    throw new Error(`Cannot get bet, ${id}`);
+  // ease of referencing
+  const id = event.params.index.toString().toLowerCase();
+
+  // format id
+  const betId = getBetId(id, address);
+
+  const betEntity = Bet.load(betId);
+  if (betEntity == null) {
+    log.error(`Could not find reference entity with id ${betId}`, []);
+    return;
+  }
+  if (betEntity.settled == true) {
+    log.error(`Bet ${betId} is already settled`, []);
+    return;
   }
 
-  entity.settled = true;
-  entity.result = event.params.result;
-  entity.recipient = event.params.recipient.toHexString();
-  entity.settledAt = event.block.timestamp.toI32();
-  entity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
+  betEntity.settled = true;
+  betEntity.didWin = event.params.result == WINNER;
+  betEntity.settledAt = event.block.timestamp;
+  betEntity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
 
-  entity.save();
+  const decimals = getMarketDecimals(event.address);
+  const payout = amountFromDecimalsToEther(event.params.payout, decimals);
+
+  // decrease user in play
+  changeUserInPlay(
+    event.params.recipient,
+    betEntity.amount,
+    false,
+    event.block.timestamp
+  );
+
+  // decrease in play by amount
+  changeProtocolInPlay(betEntity.amount, false, event.block.timestamp);
+
+  // if the user win
+  if (event.params.result == WINNER) {
+    changeProtocolTvl(payout, false, event.block.timestamp);
+
+    // increase user pnl by exposure
+    changeUserPnl(
+      event.params.recipient,
+      payout.minus(betEntity.amount),
+      true,
+      event.block.timestamp
+    );
+  } else if (event.params.result == LOSER) {
+    // if the user lost, tvl is *increased* by original amount
+    changeProtocolTvl(betEntity.amount, true, event.block.timestamp);
+
+    // decrease user pnl
+    changeUserPnl(
+      event.params.recipient,
+      betEntity.amount,
+      false,
+      event.block.timestamp
+    );
+  } else if (event.params.result == SCRATCHED) {
+    const lay = payout.minus(betEntity.amount);
+    changeProtocolTvl(lay, false, event.block.timestamp);
+
+    // increase user pnl by exposure
+    changeUserPnl(event.params.recipient, lay, true, event.block.timestamp);
+  }
+
+  betEntity.save();
 }
 
 export function handleBorrowed(event: Borrowed): void {
-  const marketAddress = event.address.toHexString();
-  if (!_isHorseLinkMarket(marketAddress)) {
+  const address = event.address.toHexString();
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
     return;
   }
 
+  // format amount to 18 decimals
+  const decimals = getMarketDecimals(event.address);
+  const amount = amountFromDecimalsToEther(event.params.amount, decimals);
+
   const entity = new Borrow(event.transaction.hash.toHexString());
-  const betId = _createBetId(marketAddress, event.params.index.toI32());
-  entity.vault = event.params.vault.toHexString();
-  entity.betId = betId;
-  entity.amount = event.params.amount;
-  entity.createdAt = event.block.timestamp.toI32();
+
+  entity.amount = amount;
+  entity.betIndex = event.params.index;
+  entity.vaultAddress = event.params.vault.toHexString();
+
+  entity.createdAt = event.block.timestamp;
 
   entity.save();
 }
 
 export function handleRepaid(event: Repaid): void {
-  if (!_isHorseLinkMarket(event.address.toHexString())) {
+  const address = event.address.toHexString();
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
     return;
   }
+
+  // format amount to 18 decimals
+  const decimals = getMarketDecimals(event.address);
+  const amount = amountFromDecimalsToEther(event.params.amount, decimals);
 
   const entity = new Repay(event.transaction.hash.toHexString());
-  entity.vault = event.params.vault.toHexString();
-  entity.amount = event.params.amount;
-  entity.createdAt = event.block.timestamp.toI32();
 
-  entity.save();
-}
+  entity.amount = amount;
+  entity.vaultAddress = event.params.vault.toHexString();
 
-export function handleRefunded(event: Refunded): void {
-  const marketAddress = event.address.toHexString();
-  if (!_isHorseLinkMarket(marketAddress)) {
-    return;
-  }
-
-  const id = _createBetId(marketAddress, event.params.index.toI32());
-  const entity = Bet.load(id);
-  if (!entity) {
-    throw new Error(`Cannot get bet, ${id}`);
-  }
-
-  entity.settled = true;
-  entity.recipient = event.params.recipient.toHexString();
-  entity.settledAt = event.block.timestamp.toI32();
-  entity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
-  entity.refunded = true;
+  entity.createdAt = event.block.timestamp;
 
   entity.save();
 }

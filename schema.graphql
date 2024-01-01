@@ -1,88 +1,165 @@
-type Registry @entity {
-  # should be "registry"
-  id: ID!
-
-  markets: [String!]!
-  vaults: [String!]!
-}
-
 type Aggregator @entity {
-  # should be "aggregator"
+  # id should always be aggregator
   id: ID!
 
-  totalMarkets: Int!
-  totalVaults: Int!
-  totalBets: Int!
+  # count of total markets
+  totalMarkets: BigInt!
+
+  # count of total vaults
+  totalVaults: BigInt!
+
+  # count of total bet
+  totalBets: BigInt!
+
+  # timestamp for last update
+  lastUpdate: BigInt!
 }
 
-type Deposit @entity {
-  # tx hash
+type Protocol @entity {
+  # id should always be "protocol"
   id: ID!
 
-  vault: String!
-  sender: String!
-  owner: String!
-  assets: BigInt!
-  shares: BigInt!
-  createdAt: Int!
+  # total amount of tokens in play
+  inPlay: BigInt!
+
+  # initial total value locked
+  initialTvl: BigInt!
+
+  # current total value locked
+  currentTvl: BigInt!
+
+  # performance as a decimal
+  performance: BigDecimal!
+
+  # timestamp for when the protocol stats was last updated
+  lastUpdate: BigInt!
 }
 
-type Withdraw @entity {
-  # tx hash
+type Registry @entity {
+  # id should always be "registry"
   id: ID!
 
-  vault: String!
-  sender: String!
-  receiver: String!
-  owner: String!
-  assets: BigInt!
-  shares: BigInt!
-  createdAt: Int!
-}
+  # array of vaults
+  vaults: [String!]!
 
-type Borrow @entity {
-  # tx hash
-  id: ID!
+  # array of markets
+  markets: [String!]!
 
-  # corresponds to a Bet ID -- BET_{market address}_{bet index}
-  betId: String!
-
-  vault: String!
-  amount: BigInt!
-  createdAt: Int!
-}
-
-type Repay @entity {
-  # tx hash
-  id: ID!
-
-  vault: String!
-  amount: BigInt!
-  createdAt: Int!
+  # timestamp for when the registry was last updated
+  lastUpdate: BigInt!
 }
 
 type Bet @entity {
-  # BET_{market address}_{bet index}
+  # index param from placed event, id param from settled event
   id: ID!
 
-  # misc bet args used on FE for sorting
-  asset: String!
-  payoutAt: Int!
-  market: String!
+  # id for the proposition (horse)
+  propositionId: Bytes!
 
-  marketId: String!
-  propositionId: String!
+  # id for market for market (race)
+  marketId: Bytes!
+
+  # address for market contract
+  marketAddress: String!
+
+  # address for underlying asset
+  assetAddress: String!
+
+  # amount of token wagered
   amount: BigInt!
+
+  # amount of token as potential payout
   payout: BigInt!
+
+  # payout timestamp
+  payoutAt: BigInt!
+
+  # address of the bet owner
   owner: String!
-  createdAt: Int!
+
+  # whether the bet is settled or not
+  settled: Boolean!
+
+  # whether the user won or lost
+  didWin: Boolean!
+
+  # timestamp when bet is placed
+  createdAt: BigInt!
+
+  # timestamp when bet is settled
+  settledAt: BigInt!
+
+  # tx for createdAt
   createdAtTx: String!
 
-  settled: Boolean!
-  result: Int!
-  recipient: String!
-  settledAt: Int!
+  # tx for settledAt
   settledAtTx: String!
+}
 
-  refunded: Boolean!
+type VaultTransaction @entity {
+  # tx hash
+  id: ID!
+
+  # either deposit or withdraw
+  type: String!
+
+  # address of vault
+  vaultAddress: String!
+
+  # address of depositer
+  userAddress: String!
+
+  # amount of token
+  amount: BigInt!
+
+  # timestamp of transaction
+  timestamp: BigInt!
+}
+
+type User @entity {
+  # id will be address
+  id: ID!
+
+  # total deposited for user
+  totalDeposited: BigInt!
+
+  # total in play for user
+  inPlay: BigInt!
+
+  # profit or loss for user
+  pnl: BigInt!
+
+  # when user entity was last updated
+  lastUpdate: BigInt!
+}
+
+type Borrow @entity {
+  # id will be tx hash
+  id: ID!
+
+  # address of vault borrowed from
+  vaultAddress: String!
+
+  # index of bet that borrowed
+  betIndex: BigInt!
+
+  # amount borrowed
+  amount: BigInt!
+
+  # timestamp
+  createdAt: BigInt!
+}
+
+type Repay @entity {
+  # id will be tx hash
+  id: ID!
+
+  # address of vault repaid
+  vaultAddress: String!
+
+  # amount repaid
+  amount: BigInt!
+
+  # timestamp
+  createdAt: BigInt!
 }
